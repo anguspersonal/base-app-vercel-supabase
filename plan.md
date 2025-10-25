@@ -240,7 +240,7 @@ In `package.json`:
 When starting a new project:
 
 ```bash
-git clone https://github.com/angushally/base-app-vercel-supabase new-project
+git clone https://github.com/anguspersonal/base-app-vercel-supabase new-project
 cd new-project
 rm -rf .git
 npm install

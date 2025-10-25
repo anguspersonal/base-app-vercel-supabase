@@ -5,10 +5,17 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/Card'
+import { Input } from '@/components/Form'
 import { ROUTES } from '@/utils/constants'
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
+  const [isSignUp, setIsSignUp] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const router = useRouter()
 
   useEffect(() => {
@@ -25,6 +32,7 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true)
+      setError('')
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -33,10 +41,56 @@ export default function LoginPage() {
       })
       
       if (error) {
-        console.error('Error signing in:', error.message)
+        setError(error.message)
       }
     } catch (error) {
-      console.error('Error signing in:', error)
+      setError('An unexpected error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEmailPasswordAuth = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setMessage('')
+
+    if (isSignUp && password !== confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
+    try {
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${ROUTES.DASHBOARD}`
+          }
+        })
+        
+        if (error) {
+          setError(error.message)
+        } else {
+          setMessage('Check your email for the confirmation link!')
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        })
+        
+        if (error) {
+          setError(error.message)
+        } else {
+          router.push(ROUTES.DASHBOARD)
+        }
+      }
+    } catch (error) {
+      setError('An unexpected error occurred')
     } finally {
       setLoading(false)
     }
@@ -47,7 +101,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
-            Sign in to your account
+            {isSignUp ? 'Create your account' : 'Sign in to your account'}
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Welcome to Base App
@@ -56,17 +110,81 @@ export default function LoginPage() {
         
         <Card>
           <CardHeader>
-            <CardTitle>Authentication</CardTitle>
+            <CardTitle>{isSignUp ? 'Sign Up' : 'Sign In'}</CardTitle>
             <CardDescription>
-              Choose your preferred sign-in method
+              {isSignUp ? 'Create a new account to get started' : 'Choose your preferred sign-in method'}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            {/* Email/Password Form */}
+            <form onSubmit={handleEmailPasswordAuth} className="space-y-4">
+              <Input
+                type="email"
+                label="Email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                error={error && error.includes('email') ? error : ''}
+              />
+              
+              <Input
+                type="password"
+                label="Password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                error={error && error.includes('password') ? error : ''}
+              />
+              
+              {isSignUp && (
+                <Input
+                  type="password"
+                  label="Confirm Password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  error={error && error.includes('match') ? error : ''}
+                />
+              )}
+              
+              {error && !error.includes('email') && !error.includes('password') && !error.includes('match') && (
+                <div className="text-sm text-red-500">{error}</div>
+              )}
+              
+              {message && (
+                <div className="text-sm text-green-600">{message}</div>
+              )}
+              
+              <Button
+                type="submit"
+                loading={loading}
+                className="w-full"
+                size="lg"
+              >
+                {isSignUp ? 'Create Account' : 'Sign In'}
+              </Button>
+            </form>
+            
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-gray-900 text-gray-500">Or continue with</span>
+              </div>
+            </div>
+            
+            {/* Google OAuth */}
             <Button
               onClick={handleGoogleSignIn}
               loading={loading}
               className="w-full"
               size="lg"
+              variant="outline"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
@@ -88,6 +206,27 @@ export default function LoginPage() {
               </svg>
               Continue with Google
             </Button>
+            
+            {/* Toggle between sign in and sign up */}
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSignUp(!isSignUp)
+                  setError('')
+                  setMessage('')
+                  setEmail('')
+                  setPassword('')
+                  setConfirmPassword('')
+                }}
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline"
+              >
+                {isSignUp 
+                  ? 'Already have an account? Sign in' 
+                  : "Don't have an account? Sign up"
+                }
+              </button>
+            </div>
             
             <div className="text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">

@@ -31,7 +31,7 @@ export default function Home() {
                     </Link>
                   </div>
                   <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <Link href="https://github.com/angushally/base-app-vercel-supabase" target="_blank" rel="noopener noreferrer">
+                    <Link href="https://github.com/anguspersonal/base-app-vercel-supabase" target="_blank" rel="noopener noreferrer">
                       <Button variant="outline" size="lg" className="w-full sm:w-auto">
                         View on GitHub
                       </Button>
@@ -162,7 +162,7 @@ export default function Home() {
                   </p>
                   <div className="mt-4 bg-gray-900 dark:bg-gray-800 rounded-lg p-4">
                     <code className="text-green-400 text-sm">
-                      git clone https://github.com/angushally/base-app-vercel-supabase my-app
+                      git clone https://github.com/anguspersonal/base-app-vercel-supabase my-app
                     </code>
                   </div>
                 </div>

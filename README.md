@@ -3,7 +3,7 @@
 A reusable **full-stack starter** built with [Next.js](https://nextjs.org), [Supabase](https://supabase.com), and deployed on [Vercel](https://vercel.com).  
 Designed for rapid prototyping and scalable production apps with minimal setup.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/angushally/base-app-vercel-supabase)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/anguspersonal/base-app-vercel-supabase)
 
 ---
 
@@ -68,7 +68,7 @@ base-app-vercel-supabase/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/angushally/base-app-vercel-supabase my-app
+git clone https://github.com/anguspersonal/base-app-vercel-supabase my-app
 cd my-app
 rm -rf .git  # Remove git history to start fresh
 ```
@@ -125,7 +125,7 @@ Open [http://localhost:3000](http://localhost:3000) to see your app!
 
 ### Option 1: One-Click Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/angushally/base-app-vercel-supabase)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/anguspersonal/base-app-vercel-supabase)
 
 ### Option 2: Manual Deploy
 
@@ -252,7 +252,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 If you have any questions or need help, please:
 
-1. Check the [Issues](https://github.com/angushally/base-app-vercel-supabase/issues) page
+1. Check the [Issues](https://github.com/anguspersonal/base-app-vercel-supabase/issues) page
 2. Create a new issue with detailed information
 3. Join our community discussions
 

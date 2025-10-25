@@ -38,13 +38,8 @@ export function Navbar() {
     router.push(ROUTES.HOME)
   }
 
-  const handleSignIn = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${ROUTES.DASHBOARD}`
-      }
-    })
+  const handleSignIn = () => {
+    router.push(ROUTES.LOGIN)
   }
 
   return (
