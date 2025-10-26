@@ -36,7 +36,7 @@ export default function LoginPage() {
     try {
       setLoading(true)
       setError('')
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${ROUTES.DASHBOARD}`
@@ -45,8 +45,6 @@ export default function LoginPage() {
 
       if (error) {
         setError(error.message)
-      } else {
-        persistSessionToCookies(data.session ?? null)
       }
     } catch (error) {
       setError('An unexpected error occurred')
