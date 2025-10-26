@@ -10,10 +10,11 @@ Designed for rapid prototyping and scalable production apps with minimal setup.
 ## 🚀 Overview
 
 **Tech Stack**
-- **Frontend:** Next.js 14+ (App Router, TypeScript, Tailwind CSS)
+- **Frontend:** Next.js 16 (App Router, TypeScript, Tailwind CSS)
 - **Backend:** Next.js API routes + Supabase Edge Functions (serverless)
 - **Database:** Supabase (PostgreSQL, hosted)
-- **Auth:** Supabase Auth (JWT sessions + Google OAuth)
+- **Auth:** Supabase Auth with PKCE + Google OAuth
+- **Auth Helpers:** `@supabase/ssr` for automatic cookie + session management
 - **Storage:** Supabase Storage (file buckets)
 - **Deployment:** Vercel (auto deploys from GitHub)
 - **Environment Management:** `.env.local` and `.env.example`
@@ -32,33 +33,43 @@ Designed for rapid prototyping and scalable production apps with minimal setup.
 base-app-vercel-supabase/
 ├── app/                          # Next.js App Router
 │   ├── api/                      # API routes
-│   │   └── health/              # Health check endpoint
-│   ├── dashboard/               # Protected dashboard page
-│   ├── login/                   # Authentication page
-│   ├── globals.css              # Global styles
-│   ├── layout.tsx               # Root layout with Navbar
-│   └── page.tsx                 # Homepage
+│   │   └── health/route.ts       # Health check endpoint
+│   ├── auth/
+│   │   └── callback/route.ts     # OAuth + email confirmation callback handler
+│   ├── dashboard/                # Protected dashboard page
+│   │   ├── DashboardClient.tsx   # Client-side dashboard interactions
+│   │   └── page.tsx              # Server-rendered dashboard entry
+│   ├── login/page.tsx            # Authentication page
+│   ├── globals.css               # Global styles
+│   ├── layout.tsx                # Root layout with Navbar/Footer toggles
+│   └── page.tsx                  # Public landing page
 ├── components/                   # Reusable UI components
-│   ├── Button.tsx               # Button component
-│   ├── Card.tsx                 # Card components
-│   ├── Form.tsx                 # Form components
-│   ├── Navbar.tsx               # Navigation component
-│   └── index.ts                 # Component exports
-├── lib/                         # Core utilities
-│   ├── auth.ts                  # Server-side auth helpers
-│   ├── db.ts                    # Database utilities
-│   └── supabaseClient.ts        # Client-side Supabase
-├── utils/                       # Utility functions
-│   ├── cn.ts                    # Class name utility
-│   ├── constants.ts             # App constants
-│   ├── fetcher.ts               # API fetch utilities
-│   └── formatDate.ts            # Date formatting
-├── supabase/                    # Database schema
-│   └── schema.sql               # SQL schema and policies
-├── .env.example                 # Environment variables template
-├── .env.local                   # Local environment variables
-├── package.json                 # Dependencies and scripts
-└── README.md                    # This file
+│   ├── Button.tsx
+│   ├── Card.tsx
+│   ├── Footer.tsx
+│   ├── Form.tsx
+│   ├── Hero.tsx
+│   ├── Layout.tsx
+│   ├── Navbar.tsx
+│   └── index.ts
+├── lib/                          # Core utilities
+│   ├── db.ts                     # Database helpers (profiles table)
+│   └── supabase/
+│       ├── client.ts             # Browser Supabase client (PKCE ready)
+│       └── server.ts             # Server Supabase client using @supabase/ssr
+├── proxy.ts                      # Next.js 16 proxy for session refresh
+├── utils/                        # App utilities
+│   ├── cn.ts
+│   ├── constants.ts
+│   ├── fetcher.ts
+│   ├── formatDate.ts
+│   └── supabase/
+│       └── proxy.ts              # Shared proxy middleware logic
+├── supabase/                     # Database schema & policies
+│   └── schema.sql
+├── .env.example                  # Environment variables template
+├── package.json                  # Dependencies and scripts
+└── README.md                     # This file
 ```
 
 ---
@@ -104,8 +115,9 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 1. Create a new project at [supabase.com](https://supabase.com)
 2. Go to the SQL Editor and run the contents of `supabase/schema.sql`
-3. Enable Google OAuth in Authentication > Providers
-4. Copy your project URL and keys to `.env.local`
+3. Enable Google OAuth in **Authentication ▸ Providers** and set the redirect URL to `https://your-site.com/auth/callback`
+4. In **Authentication ▸ URL Configuration**, set the Site URL to `http://localhost:3000` (or your deployed domain) so email confirmations also return to `/auth/callback`
+5. Copy your project URL and keys to `.env.local`
 
 ### 5. Run the Development Server
 
@@ -118,6 +130,16 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see your app!
+
+---
+
+## 🔐 Authentication Flow (PKCE + SSR)
+
+- The login page (`app/login/page.tsx`) initiates Google OAuth or email flows with `supabase.auth.signInWithOAuth` and `supabase.auth.signUp`.
+- Supabase redirects back to the shared callback handler at `app/auth/callback/route.ts`, which exchanges the code via `supabase.auth.exchangeCodeForSession`.
+- Both server and browser clients are created through `lib/supabase/server.ts` and `lib/supabase/client.ts`, ensuring `@supabase/ssr` manages cookies automatically (no manual token parsing).
+- The Next.js 16 `proxy.ts` file reuses `utils/supabase/proxy.ts` to refresh sessions on each request and gate access to `/dashboard` when the user is not authenticated.
+- Server components (e.g., `app/dashboard/page.tsx`) call `await createClient()` to read the current user while keeping session cookies in sync.
 
 ---
 
@@ -139,11 +161,11 @@ Open [http://localhost:3000](http://localhost:3000) to see your app!
 ## 🧩 Features
 
 ### ✅ Authentication
-- Google OAuth integration
-- JWT session management
-- Protected routes
-- User profile management
-- Automatic user creation
+- Google OAuth with the secure PKCE flow
+- `@supabase/ssr`-powered session persistence (server + browser)
+- Protected dashboard route enforced via Next.js proxy middleware
+- Email/password flows with confirmation links handled by the shared callback
+- Ready-to-extend profile helpers using Supabase SQL
 
 ### ✅ Database
 - PostgreSQL with Supabase
@@ -153,18 +175,17 @@ Open [http://localhost:3000](http://localhost:3000) to see your app!
 - Automatic migrations
 
 ### ✅ UI Components
-- Reusable component library
-- Tailwind CSS styling
-- Dark mode support
-- Responsive design
-- Loading states
+- Reusable Layout, Navbar, Hero, and Footer for the landing experience
+- Tailwind CSS styling with dark mode support
+- Responsive design tuned for desktop and mobile
+- Loading states and shared Button/Card/Form primitives
 
 ### ✅ Developer Experience
-- TypeScript support
-- ESLint configuration
-- Hot reloading
-- Environment management
-- Health check endpoint
+- Next.js 16 App Router with Turbopack builds
+- TypeScript + ESLint configuration for consistent code quality
+- Shared Supabase factories and proxy middleware for server-safe auth
+- Hot reloading with environment variable helpers
+- Built-in health check endpoint for monitoring
 
 ---
 
@@ -200,9 +221,10 @@ GET /api/health
 Returns server status and uptime information.
 
 ### Authentication
-- `supabase.auth.signInWithOAuth()` - Sign in with Google
-- `supabase.auth.signOut()` - Sign out
-- `supabase.auth.getSession()` - Get current session
+- `supabase.auth.signInWithOAuth()` - Start Google OAuth (PKCE)
+- `supabase.auth.exchangeCodeForSession()` - Complete the OAuth flow in `/auth/callback`
+- `supabase.auth.signOut()` - Sign out and clear cookies/local storage
+- `supabase.auth.getUser()` - Read the authenticated user (server or client)
 
 ### Database
 - `getProfile(userId)` - Get user profile
