@@ -1,35 +1,36 @@
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { supabase } from './supabaseClient'
 
-export async function getProfile(userId: string) {
-  const { data, error } = await supabase
+export async function getProfile(userId: string, client: SupabaseClient = supabase) {
+  const { data, error } = await client
     .from('profiles')
     .select('*')
     .eq('id', userId)
     .single()
-  
+
   if (error) throw error
   return data
 }
 
-export async function createProfile(userId: string, username: string) {
-  const { data, error } = await supabase
+export async function createProfile(userId: string, username: string, client: SupabaseClient = supabase) {
+  const { data, error } = await client
     .from('profiles')
     .insert({ id: userId, username })
     .select()
     .single()
-  
+
   if (error) throw error
   return data
 }
 
-export async function updateProfile(userId: string, updates: { username?: string }) {
-  const { data, error } = await supabase
+export async function updateProfile(userId: string, updates: { username?: string }, client: SupabaseClient = supabase) {
+  const { data, error } = await client
     .from('profiles')
     .update(updates)
     .eq('id', userId)
     .select()
     .single()
-  
+
   if (error) throw error
   return data
 }
