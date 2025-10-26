@@ -1,19 +1,12 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server'
+import { updateSession } from '@/utils/supabase/proxy'
 
-export function proxy(req: NextRequest) {
-  const isDashboard = req.nextUrl.pathname.startsWith('/dashboard');
-  if (!isDashboard) return NextResponse.next();
-
-  const hasAccessToken = req.cookies.get('sb-access-token') || req.cookies.get('sb:token');
-  if (!hasAccessToken) {
-    const url = new URL('/login', req.url);
-    return NextResponse.redirect(url);
-  }
-
-  return NextResponse.next();
+export async function proxy(request: NextRequest) {
+  return updateSession(request)
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
-};
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+}
