@@ -20,18 +20,11 @@ npx tsc --noEmit     # Type check (run before commit)
 ## Critical Rules
 
 ### Authentication
-<<<<<<< HEAD
-- Use `@supabase/supabase-js` client (client-side auth)
-- Client instance: `lib/supabaseClient.ts`
-- OAuth redirect: `/api/auth/callback` (Route Handler)
-- Protected routes: Check session in `useEffect` or use `proxy.ts` middleware
-=======
 - Use `@supabase/ssr` for SSR-safe cookie handling
 - Server components: `createClient()` from `lib/supabase/server.ts`
 - Client components: `createClient()` from `lib/supabase/client.ts`
 - OAuth redirect: `/auth/callback` (Route Handler)
 - Protected routes: Server-side redirect in page or `proxy.ts` middleware
->>>>>>> f0603b3 (Removed duplicate auth routes)
 
 ### TypeScript
 - **Strict mode enforced** - resolve all type errors before commit
@@ -51,7 +44,6 @@ npx tsc --noEmit     # Type check (run before commit)
 ## File Structure
 ```
 /app
-<<<<<<< HEAD
   /login            # Public auth page
   /dashboard        # Protected dashboard
   /api/auth/callback  # OAuth callback (route.ts)
@@ -62,19 +54,6 @@ npx tsc --noEmit     # Type check (run before commit)
 /components          # Reusable UI components
 /utils               # Helper functions
 proxy.ts             # Route protection middleware
-=======
-  /login            # Public auth page (client component)
-  /dashboard        # Protected dashboard (server component)
-  /auth/callback    # OAuth callback (route.ts)
-/lib
-  /supabase
-    client.ts       # Browser client (@supabase/ssr)
-    server.ts       # Server client (@supabase/ssr)
-  db.ts             # Database queries
-/components         # Reusable UI components
-/utils              # Helper functions
-proxy.ts            # Route protection middleware
->>>>>>> f0603b3 (Removed duplicate auth routes)
 ```
 
 ## Common Patterns
@@ -148,7 +127,6 @@ import { getProfile } from '@/lib/db'
 
 const supabase = await createClient()
 const profile = await getProfile(userId, supabase)
->>>>>>> f0603b3 (Removed duplicate auth routes)
 ```
 
 ## Pre-Commit Checklist
@@ -159,17 +137,11 @@ const profile = await getProfile(userId, supabase)
 
 ## Common Pitfalls
 1. **Missing 'use client'** → Hooks/state won't work in server components
-<<<<<<< HEAD
-2. **Wrong callback URL** → OAuth will fail, use `/api/auth/callback`
-3. **Skipping type check** → Build will fail on Vercel
-4. **Hardcoded URLs** → Use `process.env.NEXT_PUBLIC_SITE_URL`
-=======
 2. **Wrong callback URL** → OAuth will fail, use `/auth/callback`
 3. **Forgetting `await`** → Server functions must await `createClient()`
 4. **Wrong client import** → Use `lib/supabase/server` in server, `lib/supabase/client` in client
 5. **Skipping type check** → Build will fail on Vercel
 6. **Hardcoded URLs** → Use `process.env.NEXT_PUBLIC_SITE_URL`
->>>>>>> f0603b3 (Removed duplicate auth routes)
 
 ## Environment Variables
 ```bash
@@ -177,8 +149,6 @@ NEXT_PUBLIC_SUPABASE_URL=        # Your Supabase project URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=   # Public anon key
 NEXT_PUBLIC_SITE_URL=            # Your site URL (for OAuth redirects)
 ```
-<<<<<<< HEAD
-=======
 
 ## Next.js 16 + SSR Notes
 - **Always `await createClient()`** in server components and route handlers
@@ -186,4 +156,3 @@ NEXT_PUBLIC_SITE_URL=            # Your site URL (for OAuth redirects)
 - **Cookie handling**: `@supabase/ssr` handles cookies automatically with `getAll()`/`setAll()`
 - **Route protection**: Use `proxy.ts` middleware (NOT `middleware.ts` - deprecated in Next.js 16)
 - Server components must be `async` when calling Supabase
->>>>>>> f0603b3 (Removed duplicate auth routes)
