@@ -4,6 +4,7 @@ export const APP_DESCRIPTION = 'A reusable full-stack starter with Next.js, Supa
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  AUTH_CALLBACK: '/auth/callback',
   DASHBOARD: '/dashboard',
   PROFILE: '/profile',
 } as const

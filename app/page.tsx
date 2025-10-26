@@ -1,234 +1,206 @@
 import Link from "next/link";
+import { Layout } from "@/components/Layout";
+import { Hero } from "@/components/Hero";
 import { Button } from "@/components/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/Card";
 import { ROUTES } from "@/utils/constants";
+
+const features = [
+  {
+    title: "Authentication",
+    description: "Secure and flexible sign-in flows powered by Supabase Auth.",
+    bullets: [
+      "OAuth providers and email magic links",
+      "Session management with auth helpers",
+      "Protected routes out of the box",
+      "Ready-to-extend user profiles",
+    ],
+  },
+  {
+    title: "Database",
+    description: "Production-ready PostgreSQL with real-time updates.",
+    bullets: [
+      "Supabase Postgres with row level security",
+      "Typed queries and generated APIs",
+      "Instant SQL editor and migrations",
+      "Realtime channels and listeners",
+    ],
+  },
+  {
+    title: "Performance",
+    description: "Next.js App Router with streaming and server actions.",
+    bullets: [
+      "Built on Next.js 16 App Router",
+      "SSR, ISR, and edge-ready by default",
+      "Automatic code-splitting and bundling",
+      "Image, font, and script optimizations",
+    ],
+  },
+  {
+    title: "Deployment",
+    description: "Ship to production quickly with Vercel.",
+    bullets: [
+      "Preview deployments on every branch",
+      "Environment variable management",
+      "Analytics, monitoring, and logging",
+      "Global CDN and edge network",
+    ],
+  },
+];
+
+const tiers = [
+  {
+    name: "Hobby",
+    price: "Free",
+    description: "Everything you need to explore the stack and build a prototype.",
+    features: [
+      "Supabase project scaffolding",
+      "Email and password auth",
+      "Basic dashboard UI",
+      "Deploy to Vercel in minutes",
+    ],
+  },
+  {
+    name: "Startup",
+    price: "$29/mo",
+    description: "Extended tooling for teams shipping their first SaaS product.",
+    features: [
+      "Role-based access patterns",
+      "Team and billing scaffolds",
+      "Monitoring and logging presets",
+      "Priority community support",
+    ],
+  },
+  {
+    name: "Enterprise",
+    price: "Contact us",
+    description: "Custom engagements for established teams with complex needs.",
+    features: [
+      "Custom onboarding and support",
+      "Dedicated success engineer",
+      "Architecture reviews",
+      "SLA-backed uptime guarantees",
+    ],
+  },
+];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-              <div className="sm:text-center lg:text-left">
-                <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
-                  <span className="block xl:inline">Build faster with</span>{' '}
-                  <span className="block text-blue-600 dark:text-blue-400 xl:inline">
-                    Base App
-                  </span>
-                </h1>
-                <p className="mt-3 text-base text-gray-500 dark:text-gray-400 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  A reusable full-stack starter built with Next.js, Supabase, and Vercel. 
-                  Get your project up and running in minutes, not hours.
-                </p>
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <Link href={ROUTES.LOGIN}>
-                      <Button size="lg" className="w-full sm:w-auto">
-                        Get Started
-                      </Button>
-                    </Link>
-                  </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <Link href="https://github.com/anguspersonal/base-app-vercel-supabase" target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                        View on GitHub
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </main>
-          </div>
-        </div>
-      </div>
+    <Layout>
+      <Hero />
 
-      {/* Features Section */}
-      <div className="py-12 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-blue-600 dark:text-blue-400 font-semibold tracking-wide uppercase">
+      <section
+        id="features"
+        className="bg-gray-50 py-16 dark:bg-gray-900 sm:py-24"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-base font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
               Features
             </h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-              Everything you need to get started
+            <p className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+              Everything you need to launch faster
             </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 dark:text-gray-400 lg:mx-auto">
-              Built with modern technologies and best practices for rapid development
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+              Crafted with modern tooling, sensible defaults, and extensible patterns so you can focus on solving real customer problems.
             </p>
           </div>
 
-          <div className="mt-10">
-            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-              <Card>
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:mt-16">
+            {features.map((feature) => (
+              <Card key={feature.title}>
                 <CardHeader>
-                  <CardTitle>🔐 Authentication</CardTitle>
-                  <CardDescription>
-                    Secure authentication with Supabase Auth and Google OAuth
-                  </CardDescription>
+                  <CardTitle>{feature.title}</CardTitle>
+                  <CardDescription>{feature.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <li>• Google OAuth integration</li>
-                    <li>• JWT session management</li>
-                    <li>• Protected routes</li>
-                    <li>• User profile management</li>
+                    {feature.bullets.map((item) => (
+                      <li key={item}>• {item}</li>
+                    ))}
                   </ul>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>🗄️ Database</CardTitle>
-                  <CardDescription>
-                    PostgreSQL database with real-time subscriptions
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <li>• Supabase PostgreSQL</li>
-                    <li>• Real-time subscriptions</li>
-                    <li>• Row-level security</li>
-                    <li>• Type-safe queries</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>⚡ Performance</CardTitle>
-                  <CardDescription>
-                    Optimized for speed with Next.js App Router
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <li>• Next.js 14+ App Router</li>
-                    <li>• Server-side rendering</li>
-                    <li>• Automatic code splitting</li>
-                    <li>• Image optimization</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>🚀 Deployment</CardTitle>
-                  <CardDescription>
-                    One-click deployment to Vercel
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <li>• Automatic deployments</li>
-                    <li>• Preview deployments</li>
-                    <li>• Environment variables</li>
-                    <li>• Global CDN</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Getting Started Section */}
-      <div className="py-12 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-blue-600 dark:text-blue-400 font-semibold tracking-wide uppercase">
-              Quick Start
+      <section id="pricing" className="bg-white py-16 dark:bg-gray-950 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-base font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
+              Pricing
             </h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-              Get up and running in 5 minutes
+            <p className="mt-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+              Start free and scale as you grow
+            </p>
+            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+              Transparent pricing tiers that match your team&apos;s stage and ambition.
             </p>
           </div>
 
-          <div className="mt-10">
-            <div className="space-y-8">
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                    1
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {tiers.map((tier) => (
+              <Card
+                key={tier.name}
+                className="flex h-full flex-col border border-gray-200 shadow-sm dark:border-gray-800"
+              >
+                <CardHeader>
+                  <CardTitle>{tier.name}</CardTitle>
+                  <CardDescription>{tier.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-1 flex-col justify-between">
+                  <div>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {tier.price}
+                    </p>
+                    <ul className="mt-6 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                      {tier.features.map((feature) => (
+                        <li key={feature}>• {feature}</li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    Clone the repository
-                  </h3>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400">
-                    Start with our base template and customize it for your needs.
-                  </p>
-                  <div className="mt-4 bg-gray-900 dark:bg-gray-800 rounded-lg p-4">
-                    <code className="text-green-400 text-sm">
-                      git clone https://github.com/anguspersonal/base-app-vercel-supabase my-app
-                    </code>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                    2
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    Set up your environment
-                  </h3>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400">
-                    Create a Supabase project and configure your environment variables.
-                  </p>
-                  <div className="mt-4 bg-gray-900 dark:bg-gray-800 rounded-lg p-4">
-                    <code className="text-green-400 text-sm">
-                      cp .env.example .env.local
-                    </code>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                    3
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    Deploy to Vercel
-                  </h3>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400">
-                    Connect your repository to Vercel for automatic deployments.
-                  </p>
-                  <div className="mt-4">
-                    <Link href="https://vercel.com/new" target="_blank" rel="noopener noreferrer">
-                      <Button>
-                        Deploy to Vercel
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  <Link href={ROUTES.LOGIN} className="mt-8 block">
+                    <Button variant="outline" className="w-full">
+                      Choose {tier.name}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-gray-500 dark:text-gray-400">
-              Built with ❤️ using Next.js, Supabase, and Vercel
-            </p>
-            <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
-              © 2024 Base App. Open source and ready to use.
-            </p>
+      <section className="bg-gray-900 py-16 text-white sm:py-24">
+        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Ready to launch your next idea?
+          </h2>
+          <p className="mt-4 text-lg text-gray-300">
+            Base App gives you a polished foundation with authentication, data access, and deployment built in. Connect your domain, ship features, and focus on your customers.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href={ROUTES.LOGIN}>
+              <Button size="lg" variant="secondary">
+                Start building
+              </Button>
+            </Link>
+            <Link href="https://github.com/anguspersonal/base-app-vercel-supabase" target="_blank" rel="noreferrer">
+              <Button size="lg" variant="ghost" className="text-white hover:text-white">
+                View the code
+              </Button>
+            </Link>
           </div>
         </div>
-      </footer>
-    </div>
+      </section>
+    </Layout>
   );
 }

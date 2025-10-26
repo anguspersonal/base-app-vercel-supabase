@@ -6,7 +6,9 @@ import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/Card'
 import { Input } from '@/components/Form'
+import { Layout } from '@/components/Layout'
 import { ROUTES } from '@/utils/constants'
+import { persistSessionToCookies } from '@/lib/sessionCookies'
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
@@ -23,6 +25,7 @@ export default function LoginPage() {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
+        persistSessionToCookies(session)
         router.push(ROUTES.DASHBOARD)
       }
     }
@@ -36,10 +39,10 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${ROUTES.DASHBOARD}`
+          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${ROUTES.AUTH_CALLBACK}`,
         }
       })
-      
+
       if (error) {
         setError(error.message)
       }
@@ -64,28 +67,30 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${ROUTES.DASHBOARD}`
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${ROUTES.AUTH_CALLBACK}`,
           }
         })
-        
+
         if (error) {
           setError(error.message)
         } else {
+          persistSessionToCookies(data.session ?? null)
           setMessage('Check your email for the confirmation link!')
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password
         })
-        
+
         if (error) {
           setError(error.message)
         } else {
+          persistSessionToCookies(data.session ?? null)
           router.push(ROUTES.DASHBOARD)
         }
       }
@@ -97,7 +102,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <Layout showFooter={false} showNavbar={false}>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-900 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
@@ -243,6 +249,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </div>
+    </Layout>
   )
 }
