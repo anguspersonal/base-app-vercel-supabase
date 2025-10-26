@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Keep essential docs, ignore large reference files
+docs/stripe-instuctions.md
+docs/stripe-instructions-filtered.md
+docs/plan-new.md
+docs/plan.md
+
+# Python temp/cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Optional: ignore the filter script
+filter_stripe_docs.py
