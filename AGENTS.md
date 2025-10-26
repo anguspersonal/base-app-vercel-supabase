@@ -58,34 +58,6 @@ proxy.ts             # Route protection middleware
 
 ## Common Patterns
 
-<<<<<<< HEAD
-### Client-Side Auth Check
-```typescript
-'use client'
-import { supabase } from '@/lib/supabaseClient'
-
-const { data: { session } } = await supabase.auth.getSession()
-if (!session) router.push('/login')
-```
-
-### OAuth Flow
-```typescript
-await supabase.auth.signInWithOAuth({
-  provider: 'google',
-  options: {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
-  }
-})
-```
-
-### Database Query
-```typescript
-const { data, error } = await supabase
-  .from('profiles')
-  .select('*')
-  .eq('id', userId)
-  .single()
-=======
 ### Server Component (Protected Page)
 ```typescript
 import { redirect } from 'next/navigation'
@@ -110,11 +82,11 @@ export function LoginForm() {
   const supabase = createClient()
   
   const handleLogin = async () => {
+    // window.location.origin automatically uses the current domain
+    const redirectTo = `${window.location.origin}/auth/callback`
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
-      }
+      options: { redirectTo }
     })
   }
 }
@@ -137,18 +109,19 @@ const profile = await getProfile(userId, supabase)
 
 ## Common Pitfalls
 1. **Missing 'use client'** → Hooks/state won't work in server components
-2. **Wrong callback URL** → OAuth will fail, use `/auth/callback`
+2. **Wrong callback URL** → OAuth will fail, use `/auth/callback` and whitelist it in Supabase dashboard
 3. **Forgetting `await`** → Server functions must await `createClient()`
 4. **Wrong client import** → Use `lib/supabase/server` in server, `lib/supabase/client` in client
 5. **Skipping type check** → Build will fail on Vercel
-6. **Hardcoded URLs** → Use `process.env.NEXT_PUBLIC_SITE_URL`
+6. **Redirect URL not whitelisted** → Add `http://localhost:3000/auth/callback` (dev) and `https://your-domain.com/auth/callback` (prod) to Supabase Authentication → URL Configuration
 
 ## Environment Variables
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=        # Your Supabase project URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=   # Public anon key
-NEXT_PUBLIC_SITE_URL=            # Your site URL (for OAuth redirects)
 ```
+
+**Note:** OAuth redirects use `window.location.origin` in client components, so no site URL environment variable is needed.
 
 ## Next.js 16 + SSR Notes
 - **Always `await createClient()`** in server components and route handlers

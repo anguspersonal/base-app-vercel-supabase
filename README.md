@@ -107,17 +107,19 @@ Then edit `.env.local` with your Supabase credentials:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ### 4. Set up Supabase
 
 1. Create a new project at [supabase.com](https://supabase.com)
 2. Go to the SQL Editor and run the contents of `supabase/schema.sql`
-3. Enable Google OAuth in **Authentication ▸ Providers** and set the redirect URL to `https://your-site.com/auth/callback`
-4. In **Authentication ▸ URL Configuration**, set the Site URL to `http://localhost:3000` (or your deployed domain) so email confirmations also return to `/auth/callback`
+3. Enable Google OAuth in **Authentication ▸ Providers**
+4. In **Authentication ▸ URL Configuration**, add these **Redirect URLs**:
+   - Development: `http://localhost:3000/auth/callback`
+   - Production: `https://your-production-domain.com/auth/callback`
 5. Copy your project URL and keys to `.env.local`
+
+**Important:** The redirect URLs must be whitelisted in Supabase for OAuth to work. The app uses `window.location.origin` to automatically detect the current domain.
 
 ### 5. Run the Development Server
 
